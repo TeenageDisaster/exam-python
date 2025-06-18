@@ -1,0 +1,60 @@
+class Product:
+    total_products = 0
+    
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+        # Збільшуємо лічильник при створенні нового продукту
+        Product.total_products += 1
+    
+    def display_info(self):
+        return f"Назва: {self.name}, Ціна: {self.price} грн, Всього продуктів: {Product.total_products}"
+    
+    def __del__(self):
+        # Зменшуємо лічильник при видаленні продукту
+        Product.total_products -= 1
+
+
+class ElectronicProduct(Product):
+    def __init__(self, name, price, warranty_period):
+        super().__init__(name, price)
+        self.warranty_period = warranty_period  # у місяцях
+    
+    def display_info(self):
+        base_info = super().display_info()
+        return f"{base_info}, Гарантія: {self.warranty_period} міс., Тип: Електроніка"
+
+
+class ClothingProduct(Product):
+    def __init__(self, name, price, size):
+        super().__init__(name, price)
+        self.size = size  # розмір одягу
+    
+    def display_info(self):
+        base_info = super().display_info()
+        return f"{base_info}, Розмір: {self.size}, Тип: Одяг"
+
+
+if __name__ == "__main__":
+    print("Початкова кількість продуктів:", Product.total_products)
+    
+    
+    laptop = ElectronicProduct("Ноутбук ASUS", 25000, 24)
+    phone = ElectronicProduct("Смартфон Samsung", 15000, 12)
+    tshirt = ClothingProduct("Футболка", 500, "L")
+    jeans = ClothingProduct("Джинси", 1200, "M")
+    
+    
+    print("\nІнформація про продукти:")
+    print(laptop.display_info())
+    print(phone.display_info())
+    print(tshirt.display_info())
+    print(jeans.display_info())
+    
+    
+    print("\nПоточна кількість продуктів:", Product.total_products)
+    
+    
+    del phone
+    print("\nПісля видалення одного продукту:")
+    print("Кількість продуктів:", Product.total_products)
