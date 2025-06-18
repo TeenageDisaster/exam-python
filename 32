@@ -1,0 +1,69 @@
+from abc import ABC, abstractmethod
+
+
+class Document(ABC):
+    @abstractmethod
+    def print(self):
+        pass
+    
+    def prepare_for_printing(self):
+        print("Підготовка документа до друку...")
+        self.print()
+        print("Документ готовий!")
+
+
+
+class PDFDocument(Document):
+    def print(self):
+        print("Друк PDF-документа з високою якістю")
+
+
+class WordDocument(Document):
+    def print(self):
+        print("Друк Word-документа з розміткою сторінок")
+
+
+class ExcelDocument(Document):
+    def print(self):
+        print("Друк Excel-документа з таблицями та діаграмами")
+
+
+
+class DocumentFactory:
+    @staticmethod
+    def create_document(doc_type):
+        if doc_type == "pdf":
+            return PDFDocument()
+        elif doc_type == "word":
+            return WordDocument()
+        elif doc_type == "excel":
+            return ExcelDocument()
+        else:
+            raise ValueError(f"Невідомий тип документа: {doc_type}")
+
+
+
+if __name__ == "__main__":
+    print("Створення та друк документів:")
+    
+    try:
+        # Створюємо документи через фабрику
+        pdf = DocumentFactory.create_document("pdf")
+        word = DocumentFactory.create_document("word")
+        excel = DocumentFactory.create_document("excel")
+        
+        
+        print("\nPDF документ:")
+        pdf.prepare_for_printing()
+        
+        print("\nWord документ:")
+        word.prepare_for_printing()
+        
+        print("\nExcel документ:")
+        excel.prepare_for_printing()
+        
+        
+        # unknown = DocumentFactory.create_document("unknown")
+        
+    except ValueError as e:
+        print(f"\nПомилка: {e}")
