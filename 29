@@ -1,0 +1,66 @@
+from abc import ABC, abstractmethod
+import math
+
+class Shape(ABC):
+    @abstractmethod
+    def calculate_area(self):
+        pass
+
+class IDrawable(ABC):
+    @abstractmethod
+    def draw(self):
+        pass
+
+class Circle(Shape, IDrawable):
+    def __init__(self, radius):
+        self.radius = radius
+    
+    def calculate_area(self):
+        return math.pi * self.radius ** 2
+    
+    def draw(self):
+        print(f"Малюємо коло з радіусом {self.radius}")
+
+class Square(Shape, IDrawable):
+    def __init__(self, side):
+        self.side = side
+    
+    def calculate_area(self):
+        return self.side ** 2
+    
+    def draw(self):
+        print(f"Малюємо квадрат зі стороною {self.side}")
+
+# Клас Triangle (наслідує Shape та реалізує IDrawable)
+class Triangle(Shape, IDrawable):
+    def __init__(self, base, height):
+        self.base = base
+        self.height = height
+    
+    def calculate_area(self):
+        return 0.5 * self.base * self.height
+    
+    def draw(self):
+        print(f"Малюємо трикутник з основою {self.base} та висотою {self.height}")
+
+def main():
+    shapes = [
+        Circle(5),
+        Square(4),
+        Triangle(3, 6),
+        Circle(2),
+        Square(7)
+    ]
+    
+    for shape in shapes:
+        
+        area = shape.calculate_area()
+        print(f"Площа {shape.__class__.__name__}: {area:.2f}")
+        
+       
+        if isinstance(shape, IDrawable):
+            shape.draw()
+        print()  
+
+if __name__ == "__main__":
+    main()
