@@ -1,0 +1,84 @@
+class Logger:
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.log_file = "transactions.log"
+        return cls._instance
+    
+    def log(self, message):
+        with open(self.log_file, "a", encoding="utf-8") as file:
+            file.write(f"{message}\n")
+
+
+class InsufficientFundsError(Exception):
+    def __init__(self, account_number, balance, amount):
+        super().__init__(f"Недостатньо коштів на рахунку {account_number}. Баланс: {balance}, спроба зняти: {amount}")
+        self.account_number = account_number
+        self.balance = balance
+        self.amount = amount
+
+
+class BankAccount:
+    def __init__(self, account_number, balance=0):
+        self.account_number = account_number
+        self.balance = balance
+        self.logger = Logger()
+        self.logger.log(f"Створено рахунок {account_number} з балансом {balance}")
+    
+    def deposit(self, amount):
+        if amount <= 0:
+            raise ValueError("Сума поповнення має бути більше 0")
+        
+        self.balance += amount
+        self.logger.log(f"Рахунок {self.account_number}: поповнення на {amount}. Новий баланс: {self.balance}")
+        return self.balance
+    
+    def withdraw(self, amount):
+        if amount <= 0:
+            raise ValueError("Сума зняття має бути більше 0")
+        
+        if amount > self.balance:
+            error = InsufficientFundsError(self.account_number, self.balance, amount)
+            self.logger.log(f"Помилка: {str(error)}")
+            raise error
+        
+        self.balance -= amount
+        self.logger.log(f"Рахунок {self.account_number}: зняття {amount}. Новий баланс: {self.balance}")
+        return self.balance
+    
+    def __str__(self):
+        return f"Рахунок {self.account_number}, баланс: {self.balance}"
+
+
+
+if __name__ == "__main__":
+    try:
+        
+        logger = Logger()
+        
+        
+        account1 = BankAccount("UA123456789", 1000)
+        print(account1)
+        
+        
+        account1.deposit(500)
+        print(account1)
+        
+        
+        account1.withdraw(300)
+        print(account1)
+        
+        
+        try:
+            account1.withdraw(2000)
+        except InsufficientFundsError as e:
+            print(f"Помилка: {e}")
+        
+        
+        account2 = BankAccount("UA987654321", 500)
+        account2.deposit(200)
+        
+    except Exception as e:
+        print(f"Сталася помилка: {e}")
